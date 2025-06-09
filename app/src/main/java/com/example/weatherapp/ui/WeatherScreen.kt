@@ -1,7 +1,9 @@
 package com.example.weatherapp.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,96 +15,94 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.material.icons.filled.*
 
 @Composable
 @Preview(showBackground = true)
 fun WeatherScreen() {
+    val primaryTextColor = MaterialTheme.colorScheme.onSurface
+    val cardBackground = MaterialTheme.colorScheme.surfaceVariant
+    val cardContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(5.dp),
-        contentAlignment = Alignment.Center,
+            .padding(16.dp),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             // Name of the city
             // TODO: This is going to be dropdown in the future
+            // TODO: Location is going to come from the location provider
             Text(
                 text = "Istanbul",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp),
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 35.sp
+                style = MaterialTheme.typography.headlineLarge,
+                color = primaryTextColor
             )
+
+            // Date
             // TODO: Need to Take current date from the device
             Text(
                 text = "Mon June 9, 2025",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp)
+                style = MaterialTheme.typography.titleMedium,
+                color = primaryTextColor
             )
 
-            OutlinedCard(
+            // Weather card
+            Card(
+                modifier = Modifier.fillMaxWidth(0.9f),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = cardBackground,
+                    contentColor = cardContentColor
                 ),
-                border = BorderStroke(1.dp, Color.Black),
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp).fillMaxHeight(0.4f),
+                    modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     //TODO: Image (Icon) Should be added in here
 
                     Text(
                         text = "Mostly Cloudy",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(top = 8.dp),
-                        color = Color.White,
-                        fontSize = 20.sp
+                        style = MaterialTheme.typography.titleLarge
                     )
+
                     // TODO: Temperature is going to come from the  REST API
                     Text(
                         text = "25°",
-                        style = MaterialTheme.typography.displaySmall,
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        color = Color.White
+                        style = MaterialTheme.typography.displaySmall
                     )
-                    // TODO: Location is going to come from the location provider
                     Text(
                         text = "H:27°  L:18°",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        color = Color.White
+                        style = MaterialTheme.typography.bodyLarge
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                        
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         // TODO: Icon needs to be added!
                         Text(
-                            text = "Rain",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            color = Color.White
-                        )
+                            text = "Rain"
+                            )
+
+                        // TODO: Icon needs to be added!
                         Text(
-                            text = "Wind Speed",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            color = Color.White
+                            text = "Wind Speed"
                         )
+
+                        // TODO: Icon needs to be added!
                         Text(
-                            text = "Humidity",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            color = Color.White
+                            text = "Humidity"
                         )
                     }
                 }
@@ -110,6 +110,8 @@ fun WeatherScreen() {
         }
     }
 }
+
+
 
 
 
