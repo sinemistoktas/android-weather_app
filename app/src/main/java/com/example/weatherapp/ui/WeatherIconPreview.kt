@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui
 
+// A visual test screen to preview icons for all weather codes
 // only used to preview the weather icons before using it in app
 
 import androidx.compose.foundation.layout.Column

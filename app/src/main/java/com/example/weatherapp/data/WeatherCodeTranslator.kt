@@ -1,5 +1,10 @@
 package com.example.weatherapp.data
 
+/**
+ * Translates numeric weather codes (like 0, 1, 2...) into labels (e.g., “Clear Sky”) and icons
+ */
+
+
 // weather codes table source: https://open-meteo.com/en/docs?current=weather_code#weather_variable_documentation
 
 import androidx.compose.material.icons.Icons
