@@ -48,6 +48,11 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
  private val _error = MutableLiveData<String?>()
  val error: LiveData<String?> get() = _error
 
+ // to store all state variables in one class for ease of observability
+ private val _uiState = MutableLiveData<WeatherUiState>()
+ val uiState: LiveData<WeatherUiState> = _uiState
+
+
  fun getWeather(lat: Double, lon: Double) {
   // get all necessary variables from API
   viewModelScope.launch {
@@ -67,10 +72,29 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     _weatherCondition.value = response.current_weather?.weathercode?.let { // get weather code
      translateWeatherCodeToCondition(it) // translate weather code to weather type and its icon
     }
+    _error.value = null // no error
+    updateUiState() // updates ui state variables
+
    } catch (e: Exception) {
     // show error if API call failed
     _error.value = "Failed to fetch weather. Please try again."
+    updateUiState()
    }
   }
  }
+
+
+ private fun updateUiState() {
+  _uiState.value = WeatherUiState(
+   currentTemp = currentTemp.value,
+   condition = weatherCondition.value,
+   windSpeed = windSpeed.value,
+   humidity = humidity.value,
+   rain = rain.value,
+   tempHigh = tempHigh.value,
+   tempLow = tempLow.value,
+   error = error.value
+  )
+ }
+
 }
