@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Brush
 import com.example.weatherapp.ui.theme.*
@@ -20,8 +19,8 @@ import androidx.compose.material.icons.outlined.*
 
 
 @Composable
-@Preview(showBackground = true)
-fun WeatherScreen() {
+fun WeatherScreen(state: WeatherUiState) {
+
     val primaryTextColor = MaterialTheme.colorScheme.onSurface
     val cardBackground = MaterialTheme.colorScheme.surfaceVariant
     val cardContentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -84,28 +83,38 @@ fun WeatherScreen() {
                     ) {
                         //TODO: icon and text will be based on value we got from API, use WeatherCondition class
                         // Weather icon
-                        Icon(
-                            imageVector = Icons.Outlined.Cloud,
-                            contentDescription = "Current Weather",
-                            modifier = Modifier.size(96.dp),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                        // Weather label
-                        Text(
-                            text = "Mostly Cloudy",
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        if (state.condition != null) {
+                            Icon(
+                                imageVector = state.condition.icon,
+                                contentDescription = "Current Weather",
+                                modifier = Modifier.size(96.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                            // Weather label
+                            Text(
+                                text = state.condition.label,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                        else{
+                            CircularProgressIndicator() // instead of weather icon
+
+                            Text(
+                                text = "Failed to get weather type", // instead of weather label
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
 
                         // TODO: Temperature is going to come from the  REST API
                         // Current weather temperature
                         Text(
-                            text = "25°",
+                            text = "${state.currentTemp ?: "?"}°",
                             style = MaterialTheme.typography.displaySmall
                         )
                         // high and low temperatures
                         // TODO: H, L Temperatures are going to come from the  REST API
                         Text(
-                            text = "H:27°  L:18°",
+                            text = "H: ${state.tempHigh ?: "?"}° L:${state.tempLow ?: "?"}°",
                             style = MaterialTheme.typography.bodyLarge
                         )
 
@@ -128,7 +137,7 @@ fun WeatherScreen() {
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text( // TODO: get value from API
-                                    text = "22%",
+                                    text = "${state.rain ?: "?"}%",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
@@ -148,7 +157,7 @@ fun WeatherScreen() {
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text( // TODO: get value from API
-                                    text = "14.4 km/h",
+                                    text = "${state.windSpeed ?: "?"} km/h",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
@@ -168,7 +177,7 @@ fun WeatherScreen() {
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text( // TODO: get value from API
-                                    text = "18%",
+                                    text = "${state.humidity ?: "?"}%",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
