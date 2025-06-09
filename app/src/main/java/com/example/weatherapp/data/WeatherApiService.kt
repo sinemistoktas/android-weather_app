@@ -10,12 +10,11 @@ package com.example.weatherapp.data
 
 
 import com.example.weatherapp.model.WeatherResponse
-import com.example.weatherapp.data.Constants
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WeatherApiService {
-    @GET("Constants.WEATHER_API_ENDPOINT")
+    @GET(Constants.WEATHER_API_ENDPOINT)
     suspend fun getWeatherByLocation(
         @Query("latitude") lat: Double,
         @Query("longitude") lon: Double,
