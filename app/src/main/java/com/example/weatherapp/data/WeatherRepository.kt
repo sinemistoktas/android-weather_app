@@ -9,7 +9,10 @@ package com.example.weatherapp.data
 import com.example.weatherapp.model.WeatherResponse
 
 class WeatherRepository(private val api: WeatherApiService) {
+    // takes in the API service and lets us call it from the ViewModel
+
     suspend fun getWeatherByLocation(lat: Double, lon: Double): WeatherResponse {
+        // makes the actual network call
         return api.getWeatherByLocation(lat, lon)
     }
 }

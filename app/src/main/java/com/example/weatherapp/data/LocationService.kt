@@ -5,4 +5,5 @@ package com.example.weatherapp.data
  **/
 
 class LocationService {
+    // todo: Bensu
 }

@@ -26,6 +26,7 @@ fun WeatherScreen() {
     val cardBackground = MaterialTheme.colorScheme.surfaceVariant
     val cardContentColor = MaterialTheme.colorScheme.onSurfaceVariant
 
+    // changes background based on theme
     val isDark = isSystemInDarkTheme()
     val gradientBrush = Brush.verticalGradient(
         colors = if (isDark) {
@@ -36,7 +37,7 @@ fun WeatherScreen() {
     )
 
     Scaffold { innerPadding ->
-        Box(
+        Box( // main background container
             modifier = Modifier
                 .fillMaxSize()
                 .background(gradientBrush) // gradient background color
@@ -82,22 +83,26 @@ fun WeatherScreen() {
                         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                     ) {
                         //TODO: icon and text will be based on value we got from API, use WeatherCondition class
+                        // Weather icon
                         Icon(
                             imageVector = Icons.Outlined.Cloud,
                             contentDescription = "Current Weather",
                             modifier = Modifier.size(96.dp),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
+                        // Weather label
                         Text(
                             text = "Mostly Cloudy",
                             style = MaterialTheme.typography.titleLarge
                         )
 
                         // TODO: Temperature is going to come from the  REST API
+                        // Current weather temperature
                         Text(
                             text = "25°",
                             style = MaterialTheme.typography.displaySmall
                         )
+                        // high and low temperatures
                         // TODO: H, L Temperatures are going to come from the  REST API
                         Text(
                             text = "H:27°  L:18°",
@@ -106,7 +111,7 @@ fun WeatherScreen() {
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-
+                        // bottom section for details
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround

@@ -12,8 +12,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            WeatherAppTheme {
-                WeatherScreen()
+            WeatherAppTheme { // wraps UI with theme
+                WeatherScreen() // loads main weather UI
             }
         }
     }

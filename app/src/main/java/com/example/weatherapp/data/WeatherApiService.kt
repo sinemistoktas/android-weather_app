@@ -14,8 +14,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WeatherApiService {
+    //makes the GET request and returns the response model
     @GET(Constants.WEATHER_API_ENDPOINT)
     suspend fun getWeatherByLocation(
+        // additional parameters using the @Query annotation
         @Query("latitude") lat: Double,
         @Query("longitude") lon: Double,
         @Query("current_weather") current: Boolean = true,

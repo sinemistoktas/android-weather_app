@@ -6,26 +6,31 @@ package com.example.weatherapp.model
  * Open-Meteo API Source: https://open-meteo.com/en/docs#api-form
  */
 
+// Top-level response from the weather API
 data class WeatherResponse(
-    val current_weather: CurrentWeather?,
-    val hourly: HourlyData?,
-    val daily: DailyData?
+    val current_weather: CurrentWeather?, // current temperature, wind, code
+    val hourly: HourlyData?, // hourly values like humidity, rain %
+    val daily: DailyData?  // daily high/low temps
 )
 
+// cuurent weather -> what's happening right now
 data class CurrentWeather(
-    val temperature: Double?,
-    val windspeed: Double?,
-    val weathercode: Int?,
-    val time: String?
+    val temperature: Double?, // current temperature
+    val windspeed: Double?, // current wind speed
+    val weathercode: Int?, // code for current weather type
+    val time: String? // timestamp
 )
 
+// Hourly breakdown in list form
+// We use the first value from the hourly list to show the current weather condition
 data class HourlyData(
-    val precipitation_probability: List<Double>?,
-    val relative_humidity_2m: List<Double>?
+    val precipitation_probability: List<Double>?, // chance of rain per hour
+    val relative_humidity_2m: List<Double>? // humidity %
 )
 
+// Daily breakdown
 data class DailyData(
-    val temperature_2m_max: List<Double>?,
-    val temperature_2m_min: List<Double>?
+    val temperature_2m_max: List<Double>?, // high temp for the day
+    val temperature_2m_min: List<Double>? // low temp for the day
 )
 

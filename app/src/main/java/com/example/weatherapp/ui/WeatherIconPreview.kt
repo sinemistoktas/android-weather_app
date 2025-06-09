@@ -24,6 +24,7 @@ import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @Composable
 fun WeatherConditionTestList() {
+    // list of weather codes to test, got the codes from open-meteo API website
     val sampleCodes = listOf(
         0, 1, 2, 3,
         45, 48,
@@ -38,10 +39,10 @@ fun WeatherConditionTestList() {
     Column(
         modifier = Modifier
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()) // scrollable column
     ) {
         sampleCodes.forEach { code ->
-            val condition = translateWeatherCodeToCondition(code)
+            val condition = translateWeatherCodeToCondition(code) // get label & icon for the code
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 4.dp)
