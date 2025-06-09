@@ -13,72 +13,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
+@Preview(showBackground = true)
 fun WeatherScreen() {
-    var city by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    var weatherResult by remember { mutableStateOf<String?>(null) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text= "Weather App"
-                    )
-                }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TextField(
-                value = city,
-                onValueChange = { city = it },
-                label = { Text("Enter city") }
-            )
-
-            Button(
-                onClick = {
-                    isLoading = true
-                    errorMessage = null
-                    weatherResult = null
-
-                    // Simulate fake loading
-                    // todo: Replace this later with ViewModel logic
-                    isLoading = false
-                    weatherResult = "22°C, Clear Sky"
-                },
-                enabled = city.isNotBlank() && !isLoading
-            ) {
-                Text("Get Weather")
-            }
-
-            if (isLoading) {
-                CircularProgressIndicator()
-            }
-
-            weatherResult?.let {
-                Text("Weather: $it")
-            }
-
-            errorMessage?.let {
-                Text("Error: $it", color = MaterialTheme.colorScheme.error)
-            }
-        }
-    }
-}
-@Composable
-@Preview
-fun WeatherScreen2() {
     Box(
         modifier = Modifier
             .fillMaxSize()
