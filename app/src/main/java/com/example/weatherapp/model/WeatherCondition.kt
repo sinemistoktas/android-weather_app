@@ -1,4 +1,4 @@
-package com.example.weatherapp.data
+package com.example.weatherapp.model
 
 /**
  * Translates numeric weather codes (like 0, 1, 2...) into labels (e.g., “Clear Sky”) and icons
