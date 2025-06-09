@@ -3,7 +3,6 @@ package com.example.weatherapp.ui
 // sources:
 // gradient background color: https://developer.android.com/develop/ui/compose/graphics/draw/brush
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -12,14 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Brush
 import com.example.weatherapp.ui.theme.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
+
 
 @Composable
 @Preview(showBackground = true)
@@ -81,10 +79,15 @@ fun WeatherScreen() {
                     Column(
                         modifier = Modifier.padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                     ) {
-                        //TODO: Image (Icon) Should be added in here
-
+                        //TODO: icon and text will be based on value we got from API, use WeatherCondition class
+                        Icon(
+                            imageVector = Icons.Outlined.Cloud,
+                            contentDescription = "Current Weather",
+                            modifier = Modifier.size(96.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                         Text(
                             text = "Mostly Cloudy",
                             style = MaterialTheme.typography.titleLarge
@@ -95,6 +98,7 @@ fun WeatherScreen() {
                             text = "25°",
                             style = MaterialTheme.typography.displaySmall
                         )
+                        // TODO: H, L Temperatures are going to come from the  REST API
                         Text(
                             text = "H:27°  L:18°",
                             style = MaterialTheme.typography.bodyLarge
@@ -107,20 +111,65 @@ fun WeatherScreen() {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
-                            // TODO: Icon needs to be added!
-                            Text(
-                                text = "Rain"
-                            )
+                            // rain
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Umbrella,
+                                    contentDescription = "Rain",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text( // TODO: get value from API
+                                    text = "22%",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    text = "Rain"
+                                )
+                            }
 
-                            // TODO: Icon needs to be added!
-                            Text(
-                                text = "Wind Speed"
-                            )
+                            // wind speed
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Air,
+                                    contentDescription = "Wind Speed",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text( // TODO: get value from API
+                                    text = "14.4 km/h",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    text = "Wind Speed"
+                                )
+                            }
 
-                            // TODO: Icon needs to be added!
-                            Text(
-                                text = "Humidity"
-                            )
+                            // humidity
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.WaterDrop,
+                                    contentDescription = "Humidity",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text( // TODO: get value from API
+                                    text = "18%",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    text = "Humidity"
+                                )
+                            }
                         }
                     }
                 }
@@ -128,6 +177,7 @@ fun WeatherScreen() {
         }
     }
 }
+
 
 
 
