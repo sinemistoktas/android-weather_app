@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapp.data.UserLocation
 import com.example.weatherapp.data.WeatherRepository
 import com.example.weatherapp.model.translateWeatherCodeToCondition
 import com.example.weatherapp.model.WeatherCondition
@@ -64,13 +65,59 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
  private val _uiState = MutableLiveData<WeatherUiState>()
  val uiState: LiveData<WeatherUiState> = _uiState
 
+// current date
+ private val _currentDate = MutableLiveData<String?>()
+ val currentDate: LiveData<String?> get() = _currentDate
+
+ // current location as longitude & latitude
+ private val _currentLocation = MutableLiveData<UserLocation?>()
+ val currentLocation: LiveData<UserLocation?> get() = _currentLocation
+
+ // current city
+ // todo: will be bind to geocoder
+ private val _currentCity = MutableLiveData<String?>()
+ val currentCity: LiveData<String?> get() = _currentCity
+
+
+ init {
+  // Set initial loading state values
+  _error.value = false
+  _currentDate.value = getCurrentDate()
+  updateUiState()
+ }
+
+
+ // method to handle date updates
+private fun getCurrentDate(): String {
+ return LocalDate.now().format(
+  DateTimeFormatter.ofPattern("EEE MMMM d, yyyy", Locale.getDefault())
+ )
+}
+
+ // method to handle location updates
+ fun getLocation(location: UserLocation) {
+  _currentLocation.value = location
+  // TODO: Add reverse geocoding here to get city name
+  // For now, I've set a placeholder value, todo: change this later
+  _currentCity.value = "Current Location"
+
+  Log.d("WeatherViewModel", "Location received - Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+  // Fetch weather for the new location
+  getWeather(location.latitude, location.longitude)
+ }
 
  fun getWeather(lat: Double, lon: Double) {
+  Log.d("WeatherViewModel", "Trying to Fetching weather for coordinates - Lat: $lat, Lon: $lon")
+
   // get all necessary variables from API
   viewModelScope.launch {
    try {
     // fetch weather info from API based on location
     val response = repository.getWeatherByLocation(lat, lon)
+
+    Log.d("WeatherViewModel", "Weather API success - Temperature: ${response.current_weather?.temperature}°C")
+    Log.d("WeatherViewModel", "API Response Timezone: ${response.timezone}")
 
     // assign values to state vars
     _currentTemp.value = response.current_weather?.temperature
@@ -90,19 +137,13 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     updateUiState() // updates ui state variables
 
    } catch (e: Exception) {
-    // show error if API call failed
+    // show error if API call fails
     Log.e("WeatherRepository", "Error fetching weather data", e)
     _error.value = true
     updateUiState()
    }
   }
  }
-
-private fun getCurrentDate(): String {
- return LocalDate.now().format(
-  DateTimeFormatter.ofPattern("EEE MMMM d, yyyy", Locale.getDefault())
- )
-}
 
  private fun updateUiState() {
   _uiState.value = WeatherUiState(
@@ -116,7 +157,9 @@ private fun getCurrentDate(): String {
    tempHigh = tempHigh.value,
    tempLow = tempLow.value,
    error = error.value,
-   currentDate = getCurrentDate()
+   currentDate = currentDate.value,
+   currentLocation = currentLocation.value,
+   currentCity = currentCity.value,  // todo: will be bind to geocoder
   )
  }
 
