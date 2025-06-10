@@ -4,6 +4,7 @@ package com.example.weatherapp.ui
  Holds all weather-related state and logic
  **/
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -53,8 +54,8 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
  val weatherCondition: LiveData<WeatherCondition?> get() = _weatherCondition // data class that stores weather type and its icon based on weather code
 
  // error message, if API fails
- private val _error = MutableLiveData<String?>()
- val error: LiveData<String?> get() = _error
+ private val _error = MutableLiveData<Boolean?>()
+ val error: LiveData<Boolean?> get() = _error
 
  // to store all state variables in one class for ease of observability
  private val _uiState = MutableLiveData<WeatherUiState>()
@@ -82,12 +83,13 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     _weatherCondition.value = response.current_weather?.weathercode?.let { // get weather code
      translateWeatherCodeToCondition(it) // translate weather code to weather type and its icon
     }
-    _error.value = null // no error
+    _error.value = false // no error
     updateUiState() // updates ui state variables
 
    } catch (e: Exception) {
     // show error if API call failed
-    _error.value = "Failed to fetch weather. Please try again."
+    Log.e("WeatherRepository", "Error fetching weather data", e)
+    _error.value = true
     updateUiState()
    }
   }

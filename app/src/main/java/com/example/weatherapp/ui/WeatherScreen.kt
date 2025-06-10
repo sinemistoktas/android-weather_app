@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import com.example.weatherapp.ui.theme.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
@@ -81,105 +82,128 @@ fun WeatherScreen(state: WeatherUiState) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                     ) {
-                        // Weather icon
-                        if (state.condition != null) {
+                        // error handling, when weather info fetch fails
+                        if (state.error == true) {
                             Icon(
-                                imageVector = state.condition.icon,
-                                contentDescription = "Current Weather",
+                                imageVector = Icons.Outlined.SentimentDissatisfied, // sad error face
+                                contentDescription = "Failed to get weather info",
                                 modifier = Modifier.size(96.dp),
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
-                            // Weather label
-                            Text(
-                                text = state.condition.label,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                        else{
-                            CircularProgressIndicator() // instead of weather icon
 
                             Text(
-                                text = "Failed to get weather type", // instead of weather label
+                                text = "Oopsie Woopsie! Failed to fetch weather info. Please try again.",
+                                textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.titleMedium
                             )
-                        }
 
-                        // Current weather temperature
-                        Text(
-                            text = "${state.currentTemp ?: "?"}${state.tempUnit ?: "°"}",
-                            style = MaterialTheme.typography.displaySmall
-                        )
-                        // high and low temperatures
-                        Text(
-                            text = "H: ${state.tempHigh ?: "?"}° L:${state.tempLow ?: "?"}°",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        } else {
 
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // bottom section for details
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            // rain
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
+                            // Weather icon
+                            if (state.condition != null) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Umbrella,
-                                    contentDescription = "Rain",
-                                    modifier = Modifier.size(32.dp),
+                                    imageVector = state.condition.icon,
+                                    contentDescription = "Current Weather",
+                                    modifier = Modifier.size(96.dp),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
+                                // Weather label
                                 Text(
-                                    text = "${state.rain ?: "?"}%",
-                                    style = MaterialTheme.typography.bodyMedium
+                                    text = state.condition.label,
+                                    style = MaterialTheme.typography.titleLarge
                                 )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Outlined.Casino, // luck icon instead of failed weather icon
+                                    contentDescription = "failed to fetch weather type",
+                                    modifier = Modifier.size(96.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+
                                 Text(
-                                    text = "Rain"
+                                    text = "Couldn't get the weather type... Good luck out there!", // instead of failed weather label
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium
                                 )
                             }
 
-                            // wind speed
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Air,
-                                    contentDescription = "Wind Speed",
-                                    modifier = Modifier.size(32.dp),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = "${state.windSpeed ?: "?"} ${state.windUnit ?: "?"}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Text(
-                                    text = "Wind Speed"
-                                )
-                            }
+                            // Current weather temperature
+                            Text(
+                                text = "${state.currentTemp ?: "?"}${state.tempUnit ?: "°"}",
+                                style = MaterialTheme.typography.displaySmall
+                            )
+                            // high and low temperatures
+                            Text(
+                                text = "H: ${state.tempHigh ?: "?"}° L:${state.tempLow ?: "?"}°",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
 
-                            // humidity
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // bottom section for details
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround
                             ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.WaterDrop,
-                                    contentDescription = "Humidity",
-                                    modifier = Modifier.size(32.dp),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = "${state.humidity ?: "?"}%",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Text(
-                                    text = "Humidity"
-                                )
+                                // rain
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Umbrella,
+                                        contentDescription = "Rain",
+                                        modifier = Modifier.size(32.dp),
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = "${state.rain ?: "?"}%",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
+                                        text = "Rain"
+                                    )
+                                }
+
+                                // wind speed
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Air,
+                                        contentDescription = "Wind Speed",
+                                        modifier = Modifier.size(32.dp),
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = "${state.windSpeed ?: "?"} ${state.windUnit ?: "?"}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
+                                        text = "Wind Speed"
+                                    )
+                                }
+
+                                // humidity
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.WaterDrop,
+                                        contentDescription = "Humidity",
+                                        modifier = Modifier.size(32.dp),
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = "${state.humidity ?: "?"}%",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
+                                        text = "Humidity"
+                                    )
+                                }
                             }
                         }
                     }
