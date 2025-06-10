@@ -3,16 +3,12 @@
 package com.example.weatherapp.data
 
 import android.Manifest
-import android.content.Context
-
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -94,7 +90,7 @@ fun PermissionDialog(
 ) {
     AlertDialog(
         icon = {
-            Icon(icon, contentDescription = "Example Icon")
+            Icon(icon, contentDescription = "Location Permission Dialog")
         },
         title = {
             Text(text = dialogTitle)
@@ -157,9 +153,11 @@ fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit) {
                         .await()
 
                     location?.let {
+                        Log.d("LocationService", "Location obtained - Lat: ${it.latitude}, Lon: ${it.longitude}")
                         onLocationReceived(UserLocation(it.latitude, it.longitude))
                     }
                 } catch (e: SecurityException) {
+                    Log.e("LocationService", "Security Exception error when getting location", e)
                     showSecurityErrorDialog = true
                 }
             }

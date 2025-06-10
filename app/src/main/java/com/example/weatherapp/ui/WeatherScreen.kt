@@ -17,11 +17,10 @@ import com.example.weatherapp.ui.theme.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.text.style.TextAlign
-import com.example.weatherapp.data.UserLocation
 
 
 @Composable
-fun WeatherScreen(state: WeatherUiState, userLocation: UserLocation) {
+fun WeatherScreen(state: WeatherUiState) {
 
     val primaryTextColor = MaterialTheme.colorScheme.onSurface
     val cardBackground = MaterialTheme.colorScheme.surfaceVariant
@@ -43,7 +42,7 @@ fun WeatherScreen(state: WeatherUiState, userLocation: UserLocation) {
                 .fillMaxSize()
                 .background(gradientBrush) // gradient background color
                 .padding(innerPadding) // respects system bars & camera
-                .padding(36.dp),
+                .padding(48.dp),
             contentAlignment = Alignment.TopCenter
             )
         {
@@ -56,14 +55,14 @@ fun WeatherScreen(state: WeatherUiState, userLocation: UserLocation) {
                 // TODO: This is going to be dropdown in the future
                 // TODO: Location is going to come from the location provider
                 Text(
-                    text = "Istanbul",
+                    text = state.currentCity ?: "Loading location...",
                     style = MaterialTheme.typography.headlineLarge,
                     color = primaryTextColor
                 )
 
                 // Date
                 Text(
-                    text = state.currentDate ?: "?",
+                    text = state.currentDate ?: "Loading date...",
                     style = MaterialTheme.typography.titleMedium,
                     color = primaryTextColor
                 )
@@ -177,7 +176,7 @@ fun WeatherScreen(state: WeatherUiState, userLocation: UserLocation) {
                                         tint = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
-                                        text = "${state.windSpeed ?: "?"} ${state.windUnit ?: "?"}",
+                                        text = "${state.windSpeed ?: "?"} ${state.windUnit ?: ""}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                     Text(
@@ -231,8 +230,8 @@ fun WeatherScreen(state: WeatherUiState, userLocation: UserLocation) {
                         )
                     ) {
                         Text(
-                            text = "Long: ${userLocation.longitude ?: "?"}\n" +
-                                    "Lang: ${userLocation.latitude ?: "?"}",
+                            text = "Long: ${state.currentLocation?.longitude ?: "?"}\n" +
+                                    "Lang: ${state.currentLocation?.latitude ?: "?"}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }

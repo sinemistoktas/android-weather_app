@@ -11,7 +11,8 @@ data class WeatherResponse(
     val current_weather: CurrentWeather?, // current temperature, wind, code
     val current_weather_units: CurrentWeatherUnits?, // weather units
     val hourly: HourlyData?, // hourly values like humidity, rain %
-    val daily: DailyData?  // daily high/low temps
+    val daily: DailyData?,  // daily high/low temps
+    val timezone: String? = null // timezone info from weather API added for testing
 )
 
 // cuurent weather -> what's happening right now
