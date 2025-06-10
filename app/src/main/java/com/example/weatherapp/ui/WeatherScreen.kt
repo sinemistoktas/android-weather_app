@@ -81,7 +81,6 @@ fun WeatherScreen(state: WeatherUiState) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                     ) {
-                        //TODO: icon and text will be based on value we got from API, use WeatherCondition class
                         // Weather icon
                         if (state.condition != null) {
                             Icon(
@@ -105,14 +104,12 @@ fun WeatherScreen(state: WeatherUiState) {
                             )
                         }
 
-                        // TODO: Temperature is going to come from the  REST API
                         // Current weather temperature
                         Text(
                             text = "${state.currentTemp ?: "?"}${state.tempUnit ?: "°"}",
                             style = MaterialTheme.typography.displaySmall
                         )
                         // high and low temperatures
-                        // TODO: H, L Temperatures are going to come from the  REST API
                         Text(
                             text = "H: ${state.tempHigh ?: "?"}° L:${state.tempLow ?: "?"}°",
                             style = MaterialTheme.typography.bodyLarge
@@ -136,7 +133,7 @@ fun WeatherScreen(state: WeatherUiState) {
                                     modifier = Modifier.size(32.dp),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
-                                Text( // TODO: get value from API
+                                Text(
                                     text = "${state.rain ?: "?"}%",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
@@ -156,7 +153,7 @@ fun WeatherScreen(state: WeatherUiState) {
                                     modifier = Modifier.size(32.dp),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
-                                Text( // TODO: get value from API
+                                Text(
                                     text = "${state.windSpeed ?: "?"} ${state.windUnit ?: "?"}",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
@@ -176,7 +173,7 @@ fun WeatherScreen(state: WeatherUiState) {
                                     modifier = Modifier.size(32.dp),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
-                                Text( // TODO: get value from API
+                                Text(
                                     text = "${state.humidity ?: "?"}%",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
