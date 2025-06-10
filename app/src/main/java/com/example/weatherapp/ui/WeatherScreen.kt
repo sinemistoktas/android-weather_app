@@ -204,12 +204,37 @@ fun WeatherScreen(state: WeatherUiState, userLocation: UserLocation) {
                                         text = "Humidity"
                                     )
 
-
                                 }
 
                             }
-
                         }
+                    }
+                }
+
+
+                // Development card, todo: delete this later
+                Spacer(modifier = Modifier.height(16.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = cardBackground.copy(alpha = 0.8f),
+                        contentColor = cardContentColor
+                    ),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(
+                            12.dp,
+                            Alignment.CenterVertically
+                        )
+                    ) {
+                        Text(
+                            text = "Long: ${userLocation.longitude ?: "?"}\n" +
+                                    "Lang: ${userLocation.latitude ?: "?"}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
             }
