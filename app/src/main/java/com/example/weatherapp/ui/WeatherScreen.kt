@@ -61,9 +61,8 @@ fun WeatherScreen(state: WeatherUiState) {
                 )
 
                 // Date
-                // TODO: Need to Take current date from the device
                 Text(
-                    text = "Mon June 9, 2025",
+                    text = state.currentDate ?: "?",
                     style = MaterialTheme.typography.titleMedium,
                     color = primaryTextColor
                 )

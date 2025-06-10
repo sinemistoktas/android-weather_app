@@ -13,6 +13,9 @@ import com.example.weatherapp.data.WeatherRepository
 import com.example.weatherapp.model.translateWeatherCodeToCondition
 import com.example.weatherapp.model.WeatherCondition
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() {
  // Saves all necessary weather info variables
@@ -95,6 +98,11 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
   }
  }
 
+private fun getCurrentDate(): String {
+ return LocalDate.now().format(
+  DateTimeFormatter.ofPattern("EEE MMMM d, yyyy", Locale.getDefault())
+ )
+}
 
  private fun updateUiState() {
   _uiState.value = WeatherUiState(
@@ -107,7 +115,8 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
    rain = rain.value,
    tempHigh = tempHigh.value,
    tempLow = tempLow.value,
-   error = error.value
+   error = error.value,
+   currentDate = getCurrentDate()
   )
  }
 

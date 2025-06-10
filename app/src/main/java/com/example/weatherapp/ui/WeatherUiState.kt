@@ -13,5 +13,6 @@ data class WeatherUiState (
     val rain: Double? = null,
     val tempHigh: Double? = null,
     val tempLow: Double? = null,
-    val error: Boolean? = true
+    val error: Boolean? = false,
+    val currentDate: String? = null
 )
