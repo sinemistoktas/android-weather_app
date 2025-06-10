@@ -129,13 +129,12 @@ fun PermissionDialog(
 
 
 @Composable
-fun UserLocationScreen() {
+fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit) {
     val context = LocalContext.current
     val locationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val scope = rememberCoroutineScope()
 
     var showPermissionDialog by remember { mutableStateOf(true) }
-    var userLocation by remember { mutableStateOf<UserLocation?>(null) }
     var showSecurityErrorDialog by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -158,7 +157,7 @@ fun UserLocationScreen() {
                         .await()
 
                     location?.let {
-                        userLocation = UserLocation(it.latitude, it.longitude)
+                        onLocationReceived(UserLocation(it.latitude, it.longitude))
                     }
                 } catch (e: SecurityException) {
                     showSecurityErrorDialog = true
@@ -182,18 +181,9 @@ fun UserLocationScreen() {
         )
     }
 
-    Column(
-        modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = { showPermissionDialog = true }) {
-            Text("Request Location")
-        }
-
-        userLocation?.let {
-            Text("Latitude: ${it.latitude}")
-            Text("Longitude: ${it.longitude}")
+    if (showSecurityErrorDialog) {
+        ErrorDialog {
+            showSecurityErrorDialog = false
         }
     }
 }

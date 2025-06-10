@@ -17,10 +17,11 @@ import com.example.weatherapp.ui.theme.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.text.style.TextAlign
+import com.example.weatherapp.data.UserLocation
 
 
 @Composable
-fun WeatherScreen(state: WeatherUiState) {
+fun WeatherScreen(state: WeatherUiState, userLocation: UserLocation) {
 
     val primaryTextColor = MaterialTheme.colorScheme.onSurface
     val cardBackground = MaterialTheme.colorScheme.surfaceVariant
@@ -203,8 +204,12 @@ fun WeatherScreen(state: WeatherUiState) {
                                     Text(
                                         text = "Humidity"
                                     )
+
+
                                 }
+
                             }
+
                         }
                     }
                 }
