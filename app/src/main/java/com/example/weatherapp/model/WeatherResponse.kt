@@ -9,6 +9,7 @@ package com.example.weatherapp.model
 // Top-level response from the weather API
 data class WeatherResponse(
     val current_weather: CurrentWeather?, // current temperature, wind, code
+    val current_weather_units: CurrentWeatherUnits?, // weather units
     val hourly: HourlyData?, // hourly values like humidity, rain %
     val daily: DailyData?  // daily high/low temps
 )
@@ -19,6 +20,11 @@ data class CurrentWeather(
     val windspeed: Double?, // current wind speed
     val weathercode: Int?, // code for current weather type
     val time: String? // timestamp
+)
+
+data class CurrentWeatherUnits(
+    val temperature: String,  // tempUnit
+    val windspeed: String     // windUnit
 )
 
 // Hourly breakdown in list form

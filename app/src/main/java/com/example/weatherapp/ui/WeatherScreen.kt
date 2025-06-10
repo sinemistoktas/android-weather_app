@@ -108,7 +108,7 @@ fun WeatherScreen(state: WeatherUiState) {
                         // TODO: Temperature is going to come from the  REST API
                         // Current weather temperature
                         Text(
-                            text = "${state.currentTemp ?: "?"}°",
+                            text = "${state.currentTemp ?: "?"}${state.tempUnit ?: "°"}",
                             style = MaterialTheme.typography.displaySmall
                         )
                         // high and low temperatures
@@ -157,7 +157,7 @@ fun WeatherScreen(state: WeatherUiState) {
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text( // TODO: get value from API
-                                    text = "${state.windSpeed ?: "?"} km/h",
+                                    text = "${state.windSpeed ?: "?"} ${state.windUnit ?: "?"}",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(

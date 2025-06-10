@@ -20,6 +20,10 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
  private val _currentTemp = MutableLiveData<Double?>()
  val currentTemp: LiveData<Double?> get() = _currentTemp
 
+ // temperature unit
+ private val _tempUnit = MutableLiveData<String?>()
+ val tempUnit: LiveData<String?> get() = _tempUnit
+
  // rain probability %
  private val _rain = MutableLiveData<Double?>()
  val rain: LiveData<Double?> get() = _rain
@@ -27,6 +31,10 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
  // wind speed
  private val _windSpeed = MutableLiveData<Double?>()
  val windSpeed: LiveData<Double?> get() = _windSpeed
+
+ // wind speed unit
+ private val _windUnit = MutableLiveData<String?>()
+ val windUnit: LiveData<String?> get() = _windUnit
 
  // humidity %
  private val _humidity = MutableLiveData<Double?>()
@@ -62,8 +70,10 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
 
     // assign values to state vars
     _currentTemp.value = response.current_weather?.temperature
+    _tempUnit.value = response.current_weather_units?.temperature
     _rain.value = response.hourly?.precipitation_probability?.firstOrNull()
     _windSpeed.value = response.current_weather?.windspeed
+    _windUnit.value = response.current_weather_units?.windspeed
     _humidity.value = response.hourly?.relative_humidity_2m?.firstOrNull()
     _tempHigh.value = response.daily?.temperature_2m_max?.firstOrNull()
     _tempLow.value = response.daily?.temperature_2m_min?.firstOrNull()
@@ -87,8 +97,10 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
  private fun updateUiState() {
   _uiState.value = WeatherUiState(
    currentTemp = currentTemp.value,
+   tempUnit = tempUnit.value,
    condition = weatherCondition.value,
    windSpeed = windSpeed.value,
+   windUnit = windUnit.value,
    humidity = humidity.value,
    rain = rain.value,
    tempHigh = tempHigh.value,
