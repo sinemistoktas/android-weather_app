@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.weatherapp.data.GeocodingRepository
 import com.example.weatherapp.data.UserLocationScreen
 import com.example.weatherapp.ui.WeatherScreen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val viewModel = WeatherViewModel(WeatherRepository(WeatherApi.weatherApiService))
+        val viewModel = WeatherViewModel(WeatherRepository(WeatherApi.weatherApiService), GeocodingRepository(applicationContext))
 
         viewModel.uiState.observe(this) { state ->
             setContent {
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
                             viewModel.getLocation(location)
                         }
                     } else {
-                        WeatherScreen(state)
+                        WeatherScreen(state, viewModel)
                     }
                 }
             }
