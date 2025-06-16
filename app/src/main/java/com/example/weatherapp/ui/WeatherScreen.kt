@@ -16,11 +16,13 @@ import androidx.compose.ui.graphics.Brush
 import com.example.weatherapp.ui.theme.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
-fun WeatherScreen(state: WeatherUiState) {
+
+fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
 
     val primaryTextColor = MaterialTheme.colorScheme.onSurface
     val cardBackground = MaterialTheme.colorScheme.surfaceVariant
@@ -44,7 +46,7 @@ fun WeatherScreen(state: WeatherUiState) {
                 .padding(innerPadding) // respects system bars & camera
                 .padding(48.dp),
             contentAlignment = Alignment.TopCenter
-            )
+        )
         {
             // top rows: city and date
             Column(
@@ -54,11 +56,17 @@ fun WeatherScreen(state: WeatherUiState) {
                 // Name of the city
                 // TODO: This is going to be dropdown in the future
                 // TODO: Location is going to come from the location provider
+                /*
                 Text(
                     text = state.currentCity ?: "Loading location...",
                     style = MaterialTheme.typography.headlineLarge,
                     color = primaryTextColor
-                )
+                )*/
+                CityDropdown(currentCity = state.cityName ?: "?",
+                    onCitySelected = { selectedCity ->
+                        viewModel.getWeatherByCity(selectedCity)
+                    },
+                    primaryTextColor = primaryTextColor)
 
                 // Date
                 Text(
@@ -230,8 +238,9 @@ fun WeatherScreen(state: WeatherUiState) {
                         )
                     ) {
                         Text(
-                            text = "Long: ${state.currentLocation?.longitude ?: "?"}\n" +
-                                    "Lang: ${state.currentLocation?.latitude ?: "?"}",
+                            text = "Long: ${state.city_long ?: "?"}\n" +
+                                    "Lang: ${state.city_lat ?: "?"}",
+
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -241,7 +250,35 @@ fun WeatherScreen(state: WeatherUiState) {
     }
 }
 
+@Composable
+fun CityDropdown(
+    currentCity: String,
+    onCitySelected: (String) -> Unit,
+    primaryTextColor : Color
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val cities = listOf("Belgrad", "Berlin", "Tokyo", "Paris", "Barcelona", "New York", "Madrid", "Moscow")
 
+    Box {
+        TextButton(onClick = { expanded = true }) {
+            Text(text = currentCity,
+                style = MaterialTheme.typography.headlineLarge,
+                color = primaryTextColor)
+        }
 
-
-
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            cities.forEach { city ->
+                DropdownMenuItem(
+                    text = { Text(city) },
+                    onClick = {
+                        expanded = false
+                        onCitySelected(city)
+                    }
+                )
+            }
+        }
+    }
+}

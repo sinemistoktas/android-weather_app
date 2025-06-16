@@ -18,5 +18,9 @@ data class WeatherUiState (
     val currentDate: String? = null,
     val currentLocation: UserLocation? = null,
     val currentCity: String? = null,
-    val timezone: String? = null
+    val timezone: String? = null,
+    val cityName : String ? = null,
+    // TODO: Delete afterward
+    val city_lat : Double? = null,
+    val city_long: Double? = null,
 )

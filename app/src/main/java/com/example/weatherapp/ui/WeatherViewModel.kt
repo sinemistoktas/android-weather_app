@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapp.data.GeocodingRepository
 import com.example.weatherapp.data.UserLocation
 import com.example.weatherapp.data.WeatherRepository
 import com.example.weatherapp.model.translateWeatherCodeToCondition
@@ -18,8 +19,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() {
+class WeatherViewModel(private val repository: WeatherRepository, private val geocodingRepository: GeocodingRepository) : ViewModel() {
  // Saves all necessary weather info variables
+
+ private var _currentLat: Double? = null
+ private var _currentLon: Double? = null
+ // Saves all necessary weather info variables
+ private val _cityName = MutableLiveData<String?>()
+ val cityName: LiveData<String?> get() = _cityName
 
  // current temperature
  private val _currentTemp = MutableLiveData<Double?>()
@@ -93,6 +100,24 @@ private fun getCurrentDate(): String {
   DateTimeFormatter.ofPattern("EEE MMMM d, yyyy", Locale.getDefault())
  )
 }
+ fun getWeatherByCity(city: String) {
+  viewModelScope.launch {
+   try {
+    val coords = geocodingRepository.getCoordinates(city)
+    coords?.let { (lat, lon) ->
+     getWeather(lat, lon)
+    } ?: run {
+     _error.value = true
+     _cityName.value = "City not found"
+     updateUiState()
+    }
+   } catch (e: Exception) {
+    Log.e("Geocoding", "Error fetching coordinates for city: $city", e)
+    _error.value = true
+    updateUiState()
+   }
+  }
+ }
 
  // method to handle location updates
  fun getLocation(location: UserLocation) {
@@ -116,6 +141,12 @@ private fun getCurrentDate(): String {
     // fetch weather info from API based on location
     val response = repository.getWeatherByLocation(lat, lon)
 
+    val city = geocodingRepository.getCityName(lat, lon)
+
+    // TODO: delete afterward
+    _currentLat = lat
+    _currentLon = lon
+
     Log.d("WeatherViewModel", "Weather API success - Temperature: ${response.current_weather?.temperature}°C")
     Log.d("WeatherViewModel", "API Response Timezone: ${response.timezone}")
 
@@ -133,6 +164,7 @@ private fun getCurrentDate(): String {
     _weatherCondition.value = response.current_weather?.weathercode?.let { // get weather code
      translateWeatherCodeToCondition(it) // translate weather code to weather type and its icon
     }
+    _cityName.value = city ?: "Unknown"
     _error.value = false // no error
     updateUiState() // updates ui state variables
 
@@ -159,8 +191,11 @@ private fun getCurrentDate(): String {
    error = error.value,
    currentDate = currentDate.value,
    currentLocation = currentLocation.value,
-   currentCity = currentCity.value,  // todo: will be bind to geocoder
+   cityName = cityName.value,  // todo: will be bind to geocoder
+   city_lat = _currentLat,
+   city_long = _currentLon
   )
  }
 
 }
+
