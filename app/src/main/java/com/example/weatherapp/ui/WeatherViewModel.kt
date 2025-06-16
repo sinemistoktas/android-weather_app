@@ -191,7 +191,7 @@ private fun getCurrentDate(): String {
    error = error.value,
    currentDate = currentDate.value,
    currentLocation = currentLocation.value,
-   cityName = cityName.value,  // todo: will be bind to geocoder
+   cityName = cityName.value,
    city_lat = _currentLat,
    city_long = _currentLon
   )
