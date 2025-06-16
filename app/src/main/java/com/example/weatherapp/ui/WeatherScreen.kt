@@ -53,15 +53,8 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // Name of the city
-                // TODO: This is going to be dropdown in the future
-                // TODO: Location is going to come from the location provider
-                /*
-                Text(
-                    text = state.currentCity ?: "Loading location...",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = primaryTextColor
-                )*/
+
+                // city dropdown menu
                 CityDropdown(currentCity = state.cityName ?: "?",
                     onCitySelected = { selectedCity ->
                         viewModel.getWeatherByCity(selectedCity)

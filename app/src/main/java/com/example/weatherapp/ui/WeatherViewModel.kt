@@ -19,12 +19,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class WeatherViewModel(private val repository: WeatherRepository, private val geocodingRepository: GeocodingRepository) : ViewModel() {
+class WeatherViewModel(private val weatherRepository: WeatherRepository, private val geocodingRepository: GeocodingRepository) : ViewModel() {
  // Saves all necessary weather info variables
 
+ // current coordinates & city name
  private var _currentLat: Double? = null
  private var _currentLon: Double? = null
- // Saves all necessary weather info variables
+
  private val _cityName = MutableLiveData<String?>()
  val cityName: LiveData<String?> get() = _cityName
 
@@ -80,11 +81,6 @@ class WeatherViewModel(private val repository: WeatherRepository, private val ge
  private val _currentLocation = MutableLiveData<UserLocation?>()
  val currentLocation: LiveData<UserLocation?> get() = _currentLocation
 
- // current city
- // todo: will be bind to geocoder
- private val _currentCity = MutableLiveData<String?>()
- val currentCity: LiveData<String?> get() = _currentCity
-
 
  init {
   // Set initial loading state values
@@ -100,55 +96,61 @@ private fun getCurrentDate(): String {
   DateTimeFormatter.ofPattern("EEE MMMM d, yyyy", Locale.getDefault())
  )
 }
- fun getWeatherByCity(city: String) {
-  viewModelScope.launch {
-   try {
-    val coords = geocodingRepository.getCoordinates(city)
-    coords?.let { (lat, lon) ->
-     getWeather(lat, lon)
-    } ?: run {
-     _error.value = true
-     _cityName.value = "City not found"
-     updateUiState()
-    }
-   } catch (e: Exception) {
-    Log.e("Geocoding", "Error fetching coordinates for city: $city", e)
+
+
+ // method to handle city dropdown case
+fun getWeatherByCity(city: String) {
+ viewModelScope.launch {
+  try {
+   val coords = geocodingRepository.getCoordinates(city)
+   coords?.let { (lat, lon) ->
+    _cityName.value = city // set city name
+    updateUiState() // to update ui immediately after user selects city -> faster ui response
+    getWeather(lat, lon, skipGeocoding = true) // get weather data
+   } ?: run {
     _error.value = true
+    _cityName.value = "City not found"
     updateUiState()
    }
+  } catch (e: Exception) {
+   Log.e("Geocoding", "Error fetching coordinates for city: $city", e)
+   _error.value = true
+   updateUiState()
   }
  }
+}
 
  // method to handle location updates
  fun getLocation(location: UserLocation) {
   _currentLocation.value = location
-  // TODO: Add reverse geocoding here to get city name
-  // For now, I've set a placeholder value, todo: change this later
-  _currentCity.value = "Current Location"
-
   Log.d("WeatherViewModel", "Location received - Latitude: ${location.latitude}, Longitude: ${location.longitude}")
 
-  // Fetch weather for the new location
-  getWeather(location.latitude, location.longitude)
+  // Fetch weather for current location
+  getWeather(location.latitude, location.longitude, skipGeocoding = false)
  }
 
- fun getWeather(lat: Double, lon: Double) {
+ fun getWeather(lat: Double, lon: Double, skipGeocoding: Boolean = false) {
+  // Skip reverse geocoding (used when we already know the city name from dropdown)
   Log.d("WeatherViewModel", "Trying to Fetching weather for coordinates - Lat: $lat, Lon: $lon")
 
   // get all necessary variables from API
   viewModelScope.launch {
    try {
     // fetch weather info from API based on location
-    val response = repository.getWeatherByLocation(lat, lon)
+    val response = weatherRepository.getWeatherByLocation(lat, lon)
 
-    val city = geocodingRepository.getCityName(lat, lon)
+    // Only do reverse geocoding if we don't already have the city name
+    if (!skipGeocoding) {
+     val city = geocodingRepository.getCityName(lat, lon)
+     _cityName.value = city ?: "Unknown"
+     Log.d("WeatherViewModel", "Reverse geocoding result: ${_cityName.value}")
+    }
 
-    // TODO: delete afterward
+    // store coordinates for testing
     _currentLat = lat
     _currentLon = lon
 
     Log.d("WeatherViewModel", "Weather API success - Temperature: ${response.current_weather?.temperature}°C")
-    Log.d("WeatherViewModel", "API Response Timezone: ${response.timezone}")
 
     // assign values to state vars
     _currentTemp.value = response.current_weather?.temperature
@@ -164,7 +166,7 @@ private fun getCurrentDate(): String {
     _weatherCondition.value = response.current_weather?.weathercode?.let { // get weather code
      translateWeatherCodeToCondition(it) // translate weather code to weather type and its icon
     }
-    _cityName.value = city ?: "Unknown"
+
     _error.value = false // no error
     updateUiState() // updates ui state variables
 
