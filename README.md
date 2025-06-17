@@ -1,22 +1,22 @@
 # WeatherApp – COMP 319A Project 3
 
 This is a Jetpack Compose-based Weather app for Android developed as part of Koç University's COMP 319A - Mobile Device Programming course.  
-It fetches current weather data using REST API, displays location-based weather information, and provides an intuitive user interface.
+It fetches current weather data, displays location-based weather information, and provides an intuitive user interface.
 
 ---
 
 ## 🔧 Features
 
-- ✅ Fetch current weather data from Open-Meteo API using Retrofit
-- ✅ Display current temperature, weather condition, and visual indicators
-- ✅ Show detailed weather information (wind speed, humidity, precipitation probability)
-- ✅ Weather condition icons with comprehensive weather code translations
-- ✅ Daily high/low temperature display
-- ✅ Modern gradient background with dark/light theme support
-- ✅ Error handling with user-friendly messages
-- ✅ GPS location detection and reverse geocoding
-- ✅ City dropdown menu for selecting different locations
-- ⏳ **[Coming Soon]** Dynamic current date display
+- Fetch current weather data from the Open-Meteo API using Retrofit
+- Display current temperature, weather condition, and visual indicators
+- Show detailed weather information (wind speed, humidity, precipitation probability)
+- Weather condition icons with comprehensive weather code translations
+- Daily high & low temperature display
+- Modern gradient background with dark/light theme support
+- Error handling with user-friendly messages
+- Dynamic current date display
+- GPS location detection and reverse geocoding
+- City dropdown menu for selecting different locations
 
 ---
 
@@ -28,10 +28,10 @@ It fetches current weather data using REST API, displays location-based weather 
 - **Current Location**: Automatically detected via GPS with reverse geocoding
 - **City Selection**: Dropdown menu allows choosing from:
   - Current detected location (default)
-  - Major world cities: Paris, Berlin, Belgrad, Tokyo, New York, Moscow etc.
-  - We used Geocoder from Android SDK. In this part, geocoder takes the name of the city and returns latitude and longtitude so the weather API could return data.
+  - Major world cities: Paris, Berlin, London, Tokyo, New York, İstanbul, Barcelona, Amsterdam
+  - We used Geocoder from the Android SDK. In this part, geocoder takes the name of the city and returns the latitude and longitude so the weather API can return data.
   
-- **Weather Display**: Updates automatically when different city is selected
+- **Weather Display**: Updates automatically when a different city is selected
   - Current temperature with weather condition icon
   - Weather condition label (Clear Sky, Partly Cloudy, Rainy, etc.)
   - Daily high and low temperatures
@@ -39,7 +39,7 @@ It fetches current weather data using REST API, displays location-based weather 
 
 - **Theme Support**:
     - Automatically adapts to system dark/light mode
-    - Beautiful gradient backgrounds that change with theme
+    - Beautiful gradient backgrounds that change with the theme
 
 - **Error Handling**:
     - Displays friendly error messages when API calls fail
@@ -110,12 +110,12 @@ This project was developed using a combination of course slides, official Androi
 
 ### 📍 Location Permission
   * [Fused Location Provider](https://developer.android.com/develop/sensors-and-location/location/retrieve-current)
-  * Used to take the current location information of the user after user gave permission to access their location. The provided sample code gave use general direction while implementing the app.
+  * Used to take the current location information of the user after the user gave permission to access their location. The provided sample code gave us general direction while implementing the app.
     
 ### 🧭 Geocoder 
 
   * [Geocoder website](https://developer.android.com/reference/kotlin/android/location/Geocoder)
-  * Used for geocoding & reverse geocoding to visually gave user the name of the city using the latitude and longtitude and also providing weather information of the selected city by the user by returning lstitude and longtitude infromation to weather API.
+  * Used for geocoding & reverse geocoding to visually give the user the name of the city using the latitude and longitude, and also providing weather information of the selected city by the user by returning latitude and longitude information to the weather API.
     
 ### 📖 Implementation Guides
 
