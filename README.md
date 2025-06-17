@@ -14,8 +14,8 @@ It fetches current weather data using REST API, displays location-based weather 
 - ✅ Daily high/low temperature display
 - ✅ Modern gradient background with dark/light theme support
 - ✅ Error handling with user-friendly messages
-- ⏳ **[Coming Soon]** GPS location detection and reverse geocoding
-- ⏳ **[Coming Soon]** City dropdown menu for selecting different locations
+- ✅ GPS location detection and reverse geocoding
+- ✅ City dropdown menu for selecting different locations
 - ⏳ **[Coming Soon]** Dynamic current date display
 
 ---
@@ -28,7 +28,8 @@ It fetches current weather data using REST API, displays location-based weather 
 - **Current Location**: Automatically detected via GPS with reverse geocoding
 - **City Selection**: Dropdown menu allows choosing from:
   - Current detected location (default)
-  - Major world cities: Istanbul, Paris, Berlin, London, Tokyo, New York, etc.
+  - Major world cities: Paris, Berlin, Belgrad, Tokyo, New York, Moscow etc.
+  - We used Geocoder from Android SDK. In this part, geocoder takes the name of the city and returns latitude and longtitude so the weather API could return data.
   
 - **Weather Display**: Updates automatically when different city is selected
   - Current temperature with weather condition icon
@@ -107,6 +108,15 @@ This project was developed using a combination of course slides, official Androi
   * [https://open-meteo.com/en/docs#daily_parameter_definition](https://open-meteo.com/en/docs#daily_parameter_definition)
   * Used for weather data fetching and API parameter configuration
 
+### 📍 Location Permission
+  * [Fused Location Provider](https://developer.android.com/develop/sensors-and-location/location/retrieve-current)
+  * Used to take the current location information of the user after user gave permission to access their location. The provided sample code gave use general direction while implementing the app.
+    
+### 🧭 Geocoder 
+
+  * [Geocoder website](https://developer.android.com/reference/kotlin/android/location/Geocoder)
+  * Used for geocoding & reverse geocoding to visually gave user the name of the city using the latitude and longtitude and also providing weather information of the selected city by the user by returning lstitude and longtitude infromation to weather API.
+    
 ### 📖 Implementation Guides
 
 * **Medium Article: Forecasting Weather with Open-Meteo API**
@@ -229,3 +239,5 @@ the dropdown that appears is not the same size as current card
 ```
 **ChatGPT Response:**
 > Fixed dropdown width: Add modifier = Modifier.width(IntrinsicSize.Max) to the DropdownMenu - this makes it match the width of the trigger button
+
+*We added the given code to our UI dropdown code.*
