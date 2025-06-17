@@ -181,3 +181,51 @@ Here’s how to do it properly in a weather app using course-level architecture:
 > ```
 
 *We changed the colors from given answer and implemented our custom color scheme with gradient backgrounds that adapt to light/dark themes in `Color.kt` and `Theme.kt`.*
+
+
+### 3. Adding dropdown
+
+**Prompt:**
+```
+how to add a dropdown in compose
+```
+
+**ChatGPT Response:**
+> Simple Dropdown Using DropdownMenu in Compose:
+
+>```kotlin
+>@Composable
+>fun SimpleDropdownMenu() {
+>    var expanded by remember { mutableStateOf(false) }
+>    val items = listOf("Option 1", "Option 2", "Option 3")
+>    var selectedIndex by remember { mutableStateOf(0) }
+>
+>    Box {
+>        Button(onClick = { expanded = true }) {
+>            Text(items[selectedIndex])
+>        }
+>        DropdownMenu(
+>            expanded = expanded,
+>            onDismissRequest = { expanded = false }
+>        ) {
+>            items.forEachIndexed { index, item ->
+>                DropdownMenuItem(
+>                    text = { Text(item) },
+>                    onClick = {
+>                        selectedIndex = index
+>                        expanded = false
+>                    }
+>                )
+>            }
+>        }
+>    }
+>}
+> ```
+*We used the given code as a general guide and implemented our own*
+
+**Second Prompt:**
+```
+the dropdown that appears is not the same size as current card 
+```
+**ChatGPT Response:**
+> Fixed dropdown width: Add modifier = Modifier.width(IntrinsicSize.Max) to the DropdownMenu - this makes it match the width of the trigger button

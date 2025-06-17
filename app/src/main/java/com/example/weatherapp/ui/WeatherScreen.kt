@@ -4,6 +4,7 @@ package com.example.weatherapp.ui
 // gradient background color: https://developer.android.com/develop/ui/compose/graphics/draw/brush
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import com.example.weatherapp.ui.theme.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 
@@ -25,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
 
     val primaryTextColor = MaterialTheme.colorScheme.onSurface
-    val cardBackground = MaterialTheme.colorScheme.surfaceVariant
+    val cardBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
     val cardContentColor = MaterialTheme.colorScheme.onSurfaceVariant
 
     // changes background based on theme
@@ -59,7 +61,9 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                     onCitySelected = { selectedCity ->
                         viewModel.getWeatherByCity(selectedCity)
                     },
-                    primaryTextColor = primaryTextColor)
+                    primaryTextColor = primaryTextColor,
+                    cardBackgroundColor = cardBackgroundColor,
+                    cardContentColor = cardContentColor)
 
                 // Date
                 Text(
@@ -73,7 +77,7 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                     modifier = Modifier.fillMaxWidth(0.9f),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = cardBackground.copy(alpha = 0.8f),
+                        containerColor = cardBackgroundColor.copy(alpha = 0.8f),
                         contentColor = cardContentColor
                     ),
                 ) {
@@ -218,7 +222,7 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                     modifier = Modifier.fillMaxWidth(0.9f),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = cardBackground.copy(alpha = 0.8f),
+                        containerColor = cardBackgroundColor.copy(alpha = 0.8f),
                         contentColor = cardContentColor
                     ),
                 ) {
@@ -247,25 +251,68 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
 fun CityDropdown(
     currentCity: String,
     onCitySelected: (String) -> Unit,
-    primaryTextColor : Color
+    primaryTextColor : Color,
+    cardBackgroundColor : Color,
+    cardContentColor : Color
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val cities = listOf("Belgrad", "Berlin", "Tokyo", "Paris", "Barcelona", "New York", "Madrid", "Moscow")
+    val cities = listOf("Current City", "Paris", "Berlin", "London", "Tokyo", "New York", "İstanbul", "Barcelona", "Amsterdam")
 
-    Box {
-        TextButton(onClick = { expanded = true }) {
-            Text(text = currentCity,
-                style = MaterialTheme.typography.headlineLarge,
-                color = primaryTextColor)
+    Box(
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        // Styled dropdown button
+        Card(
+            modifier = Modifier
+                .border(
+                    width = 0.5.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(12.dp)
+                ),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = cardBackgroundColor.copy(alpha = 0.8f),
+                contentColor = cardContentColor
+            ),
+        ) {
+            TextButton(
+                onClick = { expanded = true },
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+
+                    Text(
+                        text = currentCity,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = primaryTextColor
+                    )
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowDropDown,
+                        contentDescription = "Dropdown arrow",
+                        tint = primaryTextColor,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .rotate(if (expanded) 180f else 0f)
+                    )
+                }
+            }
         }
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.width(IntrinsicSize.Max)  // Match the width of the trigger button
         ) {
             cities.forEach { city ->
                 DropdownMenuItem(
-                    text = { Text(city) },
+                    text = {
+                        Text(
+                            city,
+                            style = MaterialTheme.typography.titleLarge
+                        ) },
                     onClick = {
                         expanded = false
                         onCitySelected(city)

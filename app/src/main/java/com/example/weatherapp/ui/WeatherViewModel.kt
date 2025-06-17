@@ -102,15 +102,30 @@ private fun getCurrentDate(): String {
 fun getWeatherByCity(city: String) {
  viewModelScope.launch {
   try {
-   val coords = geocodingRepository.getCoordinates(city)
-   coords?.let { (lat, lon) ->
-    _cityName.value = city // set city name
-    updateUiState() // to update ui immediately after user selects city -> faster ui response
-    getWeather(lat, lon, skipGeocoding = true) // get weather data
-   } ?: run {
-    _error.value = true
-    _cityName.value = "City not found"
-    updateUiState()
+   if (city == "Current City") {
+    // Handle current location specially
+    val currentLocation = _currentLocation.value
+    if (currentLocation != null) {
+     updateUiState()
+     getWeather(currentLocation.latitude, currentLocation.longitude, skipGeocoding = false)
+    } else {
+     // No GPS location available
+     _error.value = true
+     _cityName.value = "Location not available"
+     updateUiState()
+    }
+   } else {
+    // Handle regular city names
+    val coords = geocodingRepository.getCoordinates(city)
+    coords?.let { (lat, lon) ->
+     _cityName.value = city // set city name
+     updateUiState() // to update ui immediately after user selects city -> faster ui response
+     getWeather(lat, lon, skipGeocoding = true) // get weather data
+    } ?: run {
+     _error.value = true
+     _cityName.value = "City not found"
+     updateUiState()
+    }
    }
   } catch (e: Exception) {
    Log.e("Geocoding", "Error fetching coordinates for city: $city", e)
