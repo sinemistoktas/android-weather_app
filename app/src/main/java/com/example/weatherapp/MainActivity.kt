@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.data.GeocodingRepository
 import com.example.weatherapp.data.UserLocationScreen
 import com.example.weatherapp.ui.WeatherScreen
@@ -14,11 +17,16 @@ import com.example.weatherapp.data.WeatherApi
 
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: WeatherViewModel by viewModels {
+        WeatherViewModelFactory(
+            WeatherRepository(WeatherApi.weatherApiService),
+            GeocodingRepository(applicationContext)
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        val viewModel = WeatherViewModel(WeatherRepository(WeatherApi.weatherApiService), GeocodingRepository(applicationContext))
 
         viewModel.uiState.observe(this) { state ->
             setContent {
@@ -37,5 +45,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+class WeatherViewModelFactory(
+    private val weatherRepository: WeatherRepository,
+    private val geocodingRepository: GeocodingRepository
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
+            return WeatherViewModel(weatherRepository, geocodingRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
