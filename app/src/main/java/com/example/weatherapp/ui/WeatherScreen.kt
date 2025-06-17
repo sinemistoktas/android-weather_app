@@ -88,8 +88,29 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                     ) {
+                        // Show loading indicator when fetching data
+                        if (state.isLoading == true) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Autorenew,
+                                    contentDescription = "Loading data",
+                                    modifier = Modifier.size(96.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Fetching weather data...",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        }
                         // Show message when no city is selected
-                        if (state.cityName == "Select City") {
+                        else if (state.cityName == "Select City") {
                             Icon(
                                 imageVector = Icons.Outlined.LocationOff,
                                 contentDescription = "Location Permission Denied",

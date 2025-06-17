@@ -85,6 +85,9 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository, private
  private val _locationPermissionGranted = MutableLiveData<Boolean>(false)
  val locationPermissionGranted: LiveData<Boolean> get() = _locationPermissionGranted
 
+ private val _isLoading = MutableLiveData<Boolean>(false)
+ val isLoading: LiveData<Boolean> get() = _isLoading
+
  init {
   // Set initial loading state values
   _error.value = false
@@ -92,6 +95,7 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository, private
   _cityName.value = "Select City"  // Set initial city name
   _locationPermissionGranted.value = false  // Set initial permission state
   _currentLocation.value = null 
+  _isLoading.value = false
   updateUiState()
  }
 
@@ -166,6 +170,9 @@ fun getWeatherByCity(city: String) {
   // get all necessary variables from API
   viewModelScope.launch {
    try {
+    _isLoading.value = true
+    updateUiState()
+    
     // fetch weather info from API based on location
     val response = weatherRepository.getWeatherByLocation(lat, lon)
 
@@ -198,12 +205,14 @@ fun getWeatherByCity(city: String) {
     }
 
     _error.value = false // no error
+    _isLoading.value = false
     updateUiState() // updates ui state variables
 
    } catch (e: Exception) {
     // show error if API call fails
     Log.e("WeatherRepository", "Error fetching weather data", e)
     _error.value = true
+    _isLoading.value = false
     updateUiState()
    }
   }
@@ -226,7 +235,8 @@ fun getWeatherByCity(city: String) {
    cityName = cityName.value,
    city_lat = _currentLat,
    city_long = _currentLon,
-   locationPermissionGranted = locationPermissionGranted.value
+   locationPermissionGranted = locationPermissionGranted.value,
+   isLoading = isLoading.value
   )
  }
 
