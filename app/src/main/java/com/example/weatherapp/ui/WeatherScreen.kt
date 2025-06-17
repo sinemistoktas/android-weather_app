@@ -23,9 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
-
 fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
-
     val primaryTextColor = MaterialTheme.colorScheme.onSurface
     val cardBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
     val cardContentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -52,18 +50,22 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
         {
             // top rows: city and date
             Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 48.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-
                 // city dropdown menu
-                CityDropdown(currentCity = state.cityName ?: "?",
+                CityDropdown(
+                    currentCity = state.cityName ?: "Select City",
                     onCitySelected = { selectedCity ->
                         viewModel.getWeatherByCity(selectedCity)
                     },
                     primaryTextColor = primaryTextColor,
                     cardBackgroundColor = cardBackgroundColor,
-                    cardContentColor = cardContentColor)
+                    cardContentColor = cardContentColor
+                )
 
                 // Date
                 Text(
@@ -86,23 +88,34 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                     ) {
+                        // Show message when no city is selected
+                        if (state.cityName == "Select City") {
+                            Icon(
+                                imageVector = Icons.Outlined.LocationOff,
+                                contentDescription = "Location Permission Denied",
+                                modifier = Modifier.size(96.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "Please select a city from the dropdown to see the weather",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                         // error handling, when weather info fetch fails
-                        if (state.error == true) {
+                        else if (state.error == true) {
                             Icon(
                                 imageVector = Icons.Outlined.SentimentDissatisfied, // sad error face
                                 contentDescription = "Failed to get weather info",
                                 modifier = Modifier.size(96.dp),
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
-
                             Text(
                                 text = "Oopsie Woopsie! Failed to fetch weather info. Please try again.",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.titleMedium
                             )
-
                         } else {
-
                             // Weather icon
                             if (state.condition != null) {
                                 Icon(

@@ -21,4 +21,5 @@ data class WeatherUiState (
     // for testing
     val city_lat : Double? = null,
     val city_long: Double? = null,
+    val locationPermissionGranted: Boolean? = false
 )

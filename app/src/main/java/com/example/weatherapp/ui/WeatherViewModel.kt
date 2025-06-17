@@ -81,11 +81,17 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository, private
  private val _currentLocation = MutableLiveData<UserLocation?>()
  val currentLocation: LiveData<UserLocation?> get() = _currentLocation
 
+ // Track if location permission was granted
+ private val _locationPermissionGranted = MutableLiveData<Boolean>(false)
+ val locationPermissionGranted: LiveData<Boolean> get() = _locationPermissionGranted
 
  init {
   // Set initial loading state values
   _error.value = false
   _currentDate.value = getCurrentDate()
+  _cityName.value = "Select City"  // Set initial city name
+  _locationPermissionGranted.value = false  // Set initial permission state
+  _currentLocation.value = null 
   updateUiState()
  }
 
@@ -138,10 +144,19 @@ fun getWeatherByCity(city: String) {
  // method to handle location updates
  fun getLocation(location: UserLocation) {
   _currentLocation.value = location
+  _locationPermissionGranted.value = true
   Log.d("WeatherViewModel", "Location received - Latitude: ${location.latitude}, Longitude: ${location.longitude}")
 
   // Fetch weather for current location
   getWeather(location.latitude, location.longitude, skipGeocoding = false)
+ }
+
+ fun setLocationPermissionDenied() {
+  _locationPermissionGranted.value = false
+  _cityName.value = "Select City"
+  _currentLocation.value = null  // Clear current location
+  _error.value = false  // Reset error state
+  updateUiState()
  }
 
  fun getWeather(lat: Double, lon: Double, skipGeocoding: Boolean = false) {
@@ -210,7 +225,8 @@ fun getWeatherByCity(city: String) {
    currentLocation = currentLocation.value,
    cityName = cityName.value,
    city_lat = _currentLat,
-   city_long = _currentLon
+   city_long = _currentLon,
+   locationPermissionGranted = locationPermissionGranted.value
   )
  }
 

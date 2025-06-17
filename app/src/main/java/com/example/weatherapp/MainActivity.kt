@@ -23,12 +23,16 @@ class MainActivity : ComponentActivity() {
         viewModel.uiState.observe(this) { state ->
             setContent {
                 WeatherAppTheme {
-                    if (state.currentLocation == null) {
-                        UserLocationScreen { location ->
-                            viewModel.getLocation(location)
-                        }
-                    } else {
-                        WeatherScreen(state, viewModel)
+                    WeatherScreen(state, viewModel)
+                    if (state.locationPermissionGranted == false && state.currentLocation == null) {
+                        UserLocationScreen(
+                            onLocationReceived = { location ->
+                                viewModel.getLocation(location)
+                            },
+                            onPermissionDenied = {
+                                viewModel.setLocationPermissionDenied()
+                            }
+                        )
                     }
                 }
             }
