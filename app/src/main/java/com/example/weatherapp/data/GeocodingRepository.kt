@@ -25,10 +25,12 @@ class GeocodingRepository(private val context: Context) {
                 Log.d(TAG, "=== ADDRESS DETAILS ===")
                 Log.d(TAG, "locality: '${address.locality}'")
                 Log.d(TAG, "adminArea: '${address.adminArea}'")
+            
 
                 // Try multiple fields to find the city name
-                val cityName = address.locality?.takeIf { it.isNotEmpty() }
-                    ?: address.adminArea?.takeIf { it.isNotEmpty() }
+                val cityName = address.adminArea?.takeIf { it.isNotEmpty() }
+                    ?: address.locality?.takeIf { it.isNotEmpty() }
+                    
 
                 Log.d(TAG, "Selected city name: '$cityName'")
                 return@withContext cityName

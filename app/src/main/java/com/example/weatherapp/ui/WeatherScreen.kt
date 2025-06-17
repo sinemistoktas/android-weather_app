@@ -44,7 +44,7 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                 .fillMaxSize()
                 .background(gradientBrush) // gradient background color
                 .padding(innerPadding) // respects system bars & camera
-                .padding(48.dp),
+                .padding(24.dp),
             contentAlignment = Alignment.TopCenter
         )
         {
@@ -52,7 +52,7 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 48.dp),
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
@@ -76,7 +76,8 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
 
                 // Weather card
                 Card(
-                    modifier = Modifier.fillMaxWidth(0.9f),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = cardBackgroundColor.copy(alpha = 0.8f),
@@ -111,31 +112,45 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                         }
                         // Show message when no city is selected
                         else if (state.cityName == "Select City") {
-                            Icon(
-                                imageVector = Icons.Outlined.LocationOff,
-                                contentDescription = "Location Permission Denied",
-                                modifier = Modifier.size(96.dp),
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = "Please select a city from the dropdown to see the weather",
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.TouchApp,
+                                    contentDescription = "Location Permission Denied",
+                                    modifier = Modifier.size(96.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Please select a city from the dropdown to see the weather",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
                         // error handling, when weather info fetch fails
                         else if (state.error == true) {
-                            Icon(
-                                imageVector = Icons.Outlined.SentimentDissatisfied, // sad error face
-                                contentDescription = "Failed to get weather info",
-                                modifier = Modifier.size(96.dp),
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = "Oopsie Woopsie!  Failed to fetch weather info.  Try again.",
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.SentimentDissatisfied, // sad error face
+                                    contentDescription = "Failed to get weather info",
+                                    modifier = Modifier.size(96.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Oopsie Woopsie!  Failed to fetch weather info.  Try again.",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
                         } else {
                             // Weather icon
                             if (state.condition != null) {

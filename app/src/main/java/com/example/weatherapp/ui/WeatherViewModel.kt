@@ -121,7 +121,7 @@ fun getWeatherByCity(city: String) {
     } else {
      // No GPS location available
      _error.value = true
-     _cityName.value = "Location not available"
+     _cityName.value = "Unavailable"
      updateUiState()
     }
    } else {
@@ -133,7 +133,7 @@ fun getWeatherByCity(city: String) {
      getWeather(lat, lon, skipGeocoding = true) // get weather data
     } ?: run {
      _error.value = true
-     _cityName.value = "City not found"
+     _cityName.value = "Unavailable"
      updateUiState()
     }
    }
