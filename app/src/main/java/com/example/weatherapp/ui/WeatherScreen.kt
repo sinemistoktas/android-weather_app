@@ -248,34 +248,6 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                         }
                     }
                 }
-
-
-                // Development card, todo: delete this later
-                Spacer(modifier = Modifier.height(16.dp))
-                Card(
-                    modifier = Modifier.fillMaxWidth(0.9f),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = cardBackgroundColor.copy(alpha = 0.8f),
-                        contentColor = cardContentColor
-                    ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(
-                            12.dp,
-                            Alignment.CenterVertically
-                        )
-                    ) {
-                        Text(
-                            text = "Long: ${state.city_long ?: "?"}\n" +
-                                    "Lang: ${state.city_lat ?: "?"}",
-
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
             }
         }
     }
