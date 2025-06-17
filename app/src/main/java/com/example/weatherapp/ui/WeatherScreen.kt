@@ -4,6 +4,7 @@ package com.example.weatherapp.ui
 // gradient background color: https://developer.android.com/develop/ui/compose/graphics/draw/brush
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,14 +17,15 @@ import androidx.compose.ui.graphics.Brush
 import com.example.weatherapp.ui.theme.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
-fun WeatherScreen(state: WeatherUiState) {
-
+fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
     val primaryTextColor = MaterialTheme.colorScheme.onSurface
-    val cardBackground = MaterialTheme.colorScheme.surfaceVariant
+    val cardBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
     val cardContentColor = MaterialTheme.colorScheme.onSurfaceVariant
 
     // changes background based on theme
@@ -42,22 +44,27 @@ fun WeatherScreen(state: WeatherUiState) {
                 .fillMaxSize()
                 .background(gradientBrush) // gradient background color
                 .padding(innerPadding) // respects system bars & camera
-                .padding(48.dp),
+                .padding(24.dp),
             contentAlignment = Alignment.TopCenter
-            )
+        )
         {
             // top rows: city and date
             Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // Name of the city
-                // TODO: This is going to be dropdown in the future
-                // TODO: Location is going to come from the location provider
-                Text(
-                    text = state.currentCity ?: "Loading location...",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = primaryTextColor
+                // city dropdown menu
+                CityDropdown(
+                    currentCity = state.cityName ?: "Select City",
+                    onCitySelected = { selectedCity ->
+                        viewModel.getWeatherByCity(selectedCity)
+                    },
+                    primaryTextColor = primaryTextColor,
+                    cardBackgroundColor = cardBackgroundColor,
+                    cardContentColor = cardContentColor
                 )
 
                 // Date
@@ -69,10 +76,11 @@ fun WeatherScreen(state: WeatherUiState) {
 
                 // Weather card
                 Card(
-                    modifier = Modifier.fillMaxWidth(0.9f),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = cardBackground.copy(alpha = 0.8f),
+                        containerColor = cardBackgroundColor.copy(alpha = 0.8f),
                         contentColor = cardContentColor
                     ),
                 ) {
@@ -81,23 +89,69 @@ fun WeatherScreen(state: WeatherUiState) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                     ) {
+                        // Show loading indicator when fetching data
+                        if (state.isLoading == true) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Autorenew,
+                                    contentDescription = "Loading data",
+                                    modifier = Modifier.size(96.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Fetching weather data...",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        }
+                        // Show message when no city is selected
+                        else if (state.cityName == "Select City") {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.TouchApp,
+                                    contentDescription = "Location Permission Denied",
+                                    modifier = Modifier.size(96.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Please select a city from the dropdown to see the weather",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
                         // error handling, when weather info fetch fails
-                        if (state.error == true) {
-                            Icon(
-                                imageVector = Icons.Outlined.SentimentDissatisfied, // sad error face
-                                contentDescription = "Failed to get weather info",
-                                modifier = Modifier.size(96.dp),
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-
-                            Text(
-                                text = "Oopsie Woopsie! Failed to fetch weather info. Please try again.",
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-
+                        else if (state.error == true) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.SentimentDissatisfied, // sad error face
+                                    contentDescription = "Failed to get weather info",
+                                    modifier = Modifier.size(96.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Oopsie Woopsie!  Failed to fetch weather info.  Try again.",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
                         } else {
-
                             // Weather icon
                             if (state.condition != null) {
                                 Icon(
@@ -209,39 +263,83 @@ fun WeatherScreen(state: WeatherUiState) {
                         }
                     }
                 }
-
-
-                // Development card, todo: delete this later
-                Spacer(modifier = Modifier.height(16.dp))
-                Card(
-                    modifier = Modifier.fillMaxWidth(0.9f),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = cardBackground.copy(alpha = 0.8f),
-                        contentColor = cardContentColor
-                    ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(
-                            12.dp,
-                            Alignment.CenterVertically
-                        )
-                    ) {
-                        Text(
-                            text = "Long: ${state.currentLocation?.longitude ?: "?"}\n" +
-                                    "Lang: ${state.currentLocation?.latitude ?: "?"}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
             }
         }
     }
 }
 
+@Composable
+fun CityDropdown(
+    currentCity: String,
+    onCitySelected: (String) -> Unit,
+    primaryTextColor : Color,
+    cardBackgroundColor : Color,
+    cardContentColor : Color
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val cities = listOf("Current City", "Paris", "Berlin", "London", "Tokyo", "New York", "İstanbul", "Barcelona", "Amsterdam")
 
+    Box(
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        // Styled dropdown button
+        Card(
+            modifier = Modifier
+                .border(
+                    width = 0.5.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(12.dp)
+                ),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = cardBackgroundColor.copy(alpha = 0.8f),
+                contentColor = cardContentColor
+            ),
+        ) {
+            TextButton(
+                onClick = { expanded = true },
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
 
+                    Text(
+                        text = currentCity,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = primaryTextColor
+                    )
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowDropDown,
+                        contentDescription = "Dropdown arrow",
+                        tint = primaryTextColor,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .rotate(if (expanded) 180f else 0f)
+                    )
+                }
+            }
+        }
 
-
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.width(IntrinsicSize.Max)  // Match the width of the trigger button
+        ) {
+            cities.forEach { city ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            city,
+                            style = MaterialTheme.typography.titleLarge
+                        ) },
+                    onClick = {
+                        expanded = false
+                        onCitySelected(city)
+                    }
+                )
+            }
+        }
+    }
+}

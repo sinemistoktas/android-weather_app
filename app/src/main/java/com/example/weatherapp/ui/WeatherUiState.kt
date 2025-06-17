@@ -17,6 +17,10 @@ data class WeatherUiState (
     val error: Boolean? = false,
     val currentDate: String? = null,
     val currentLocation: UserLocation? = null,
-    val currentCity: String? = null,
-    val timezone: String? = null
+    val cityName : String ? = null,
+    // for testing
+    val city_lat : Double? = null,
+    val city_long: Double? = null,
+    val locationPermissionGranted: Boolean? = false,
+    val isLoading: Boolean? = false
 )

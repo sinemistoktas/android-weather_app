@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.weatherapp.data.GeocodingRepository
 import com.example.weatherapp.data.UserLocationScreen
 import com.example.weatherapp.ui.WeatherScreen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
@@ -13,24 +17,45 @@ import com.example.weatherapp.data.WeatherApi
 
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: WeatherViewModel by viewModels {
+        WeatherViewModelFactory(
+            WeatherRepository(WeatherApi.weatherApiService),
+            GeocodingRepository(applicationContext)
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val viewModel = WeatherViewModel(WeatherRepository(WeatherApi.weatherApiService))
-
         viewModel.uiState.observe(this) { state ->
             setContent {
                 WeatherAppTheme {
-                    if (state.currentLocation == null) {
-                        UserLocationScreen { location ->
-                            viewModel.getLocation(location)
-                        }
-                    } else {
-                        WeatherScreen(state)
+                    WeatherScreen(state, viewModel)
+                    if (state.locationPermissionGranted == false && state.currentLocation == null) {
+                        UserLocationScreen(
+                            onLocationReceived = { location ->
+                                viewModel.getLocation(location)
+                            },
+                            onPermissionDenied = {
+                                viewModel.setLocationPermissionDenied()
+                            }
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+class WeatherViewModelFactory(
+    private val weatherRepository: WeatherRepository,
+    private val geocodingRepository: GeocodingRepository
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
+            return WeatherViewModel(weatherRepository, geocodingRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

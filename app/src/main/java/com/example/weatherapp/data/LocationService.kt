@@ -73,9 +73,11 @@ fun LocationPermission(
 ) {
     PermissionDialog(
         dialogTitle = "Location Permission",
-        dialogText = "We need your location to show you weather data on your area.",
+        dialogText = "We need your location to show you accurate weather information based on your current location. \n\n You can also select a city to view its weather from the dropdown menu.",
         icon = Icons.Default.LocationOn,
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            onDismiss()
+        },
         onConfirmation = onRequestPermissions
     )
 }
@@ -125,7 +127,7 @@ fun PermissionDialog(
 
 
 @Composable
-fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit) {
+fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit, onPermissionDenied: () -> Unit) {
     val context = LocalContext.current
     val locationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val scope = rememberCoroutineScope()
@@ -161,6 +163,8 @@ fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit) {
                     showSecurityErrorDialog = true
                 }
             }
+        } else {
+            onPermissionDenied()
         }
     }
 
@@ -175,7 +179,10 @@ fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit) {
                     )
                 )
             },
-            onDismiss = { showPermissionDialog = false }
+            onDismiss = {
+                showPermissionDialog = false
+                onPermissionDenied()
+            }
         )
     }
 
