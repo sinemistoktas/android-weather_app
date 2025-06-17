@@ -111,7 +111,7 @@ fun WeatherScreen(state: WeatherUiState, viewModel: WeatherViewModel) {
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = "Oopsie Woopsie! Failed to fetch weather info. Please try again.",
+                                text = "Oopsie Woopsie!  Failed to fetch weather info.  Try again.",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.titleMedium
                             )
