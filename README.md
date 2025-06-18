@@ -26,8 +26,9 @@ It fetches current weather data, displays location-based weather information, an
 
 **Main Screen**: Displays comprehensive weather information
 - **Current Location**:
-  - Automatically detected via GPS with reverse geocoding using **Geocoder** provided by Android.
-  - Permission dialog shown to access the location information of the user. Permission dialog shown at the beginning. If the user do not want the app to acces their current location, they can still use the app with other cities. When user wants to access the current location information still, the permission dialog shown again to gain access.
+  - Automatically detected via GPS with reverse geocoding using 
+**Geocoder** provided by Android.
+  - When the app starts, it asks for permission to access your location. If you decline, you can still use the app to view weather for other cities. If you later want to enable current location, the app will show the permission dialog again when you select the current location option from dropdown menu.
   
 - **City Selection**: Dropdown menu allows choosing from:
   - Current detected location (default)
@@ -58,6 +59,21 @@ It fetches current weather data, displays location-based weather information, an
 - **MVVM Architecture** - ViewModel + Repository pattern
 - **Coroutines & LiveData** - Asynchronous programming and state management
 - **Material3 UI Components** - Modern Material Design system
+
+---
+
+## ❔ How We Handle Weather App Logic & Added UI State
+
+First, we decided on the UI design. We chose to use Material Design Cards to organize all the weather information we retrieve from the API into their designated places. After finalizing our desired UI design, we began implementing the Weather API integration to fetch weather information from specific latitude and longitude coordinates. We store the API configuration (base URL and endpoints) in the `data` folder within the `Constants.kt` file and connect to the weather API through the `WeatherApi` class. After successfully connecting to the Weather API, we use the **WeatherApiService** class to send requests and retrieve specific weather information from the API.
+
+After successfully demonstrating that we could connect to the Weather API, we started working on obtaining the current location of the user. We used **FusedLocationProvider** for this purpose. We also referenced the sample code as guidance while implementing the **LocationService** in our app. The location service functionality can be summarized as follows:
+
+- Get the current location of the user using **FusedLocationProvider** if the user accepts sharing their location information with the app.
+- If location permission is denied, the app only shows weather information for other cities from the dropdown menu.
+- When a user clicks on "Current City" while having previously dismissed the location permission request, the app shows the location permission dialog again and asks if the user wants to share their location information now. (This is implemented using the **resetPermissionDialogShown()** function in the ViewModel, which resets the permission dialog state when the user clicks on the current location option without having granted location permission.)
+- If the user accepts sharing their location information with the app, they can easily see their current location weather alongside all other available locations. Using UI state management, we ensure the state of the UI is preserved when the app context changes due to user interactions.
+
+Next, we implemented the Geocoder to support our city dropdown functionality. When a user selects a city from the dropdown, the UI displays weather information for that specific city. We chose the Geocoder provided by the Android SDK since it's free and easy to use. The Geocoder serves two main purposes: First, it provides the city name after we obtain the location latitude and longitude from **FusedLocationProvider**. Since longitude and latitude coordinates aren't easily understood by users, we needed reverse geocoding to convert coordinates to readable city names. Second, we need to provide latitude and longitude coordinates for cities chosen by the user through the dropdown menu, so we use forward geocoding to convert the city name to coordinates and provide this information to the weather API using state variables.
 
 ---
 
@@ -131,19 +147,6 @@ This project was developed using a combination of course slides, official Androi
 * **Google Fonts & Material Icons**
   * [https://fonts.google.com/?icon.size=24&icon.color=%231f1f1f&icon.platform=android&icon.set=Material+Icons&icon.style=Filled](https://fonts.google.com/?icon.size=24&icon.color=%231f1f1f&icon.platform=android&icon.set=Material+Icons&icon.style=Filled)
   * Used for searching and selecting appropriate weather condition icons
-
-## How We Handle Weather App Logic & Added UI State
-
- First, we decided on the UI design. We decided to use Card from material design to be able to put all the information we gain from the weather app to their designated places. After we finished the UI design we wanted, we started on using Weather API to get weather information from a specific latitude and longtitude we manually entered. We store API keys and URL on the folder data and inside Constants file and connect to the weather API on Weather API class. After we connected to the weather API sucessfully, using the **WeatherApiService** class, we send the request to get certain informations from the API itself.
-
-After we sucessfully demonstrate that we could connect to the Weather API, we started to work on getting the current location of the user. We used **FusedLocationProvider** to do that. We also used the sample code as an guidance while putting **LocationService** onto our App. What location service does can be summarized as follows:
- 
-- Get the current location of the user using **FusedLocationProvider** if the user accept the location information to be shared with the app.
-- If it does not then it only shows the weather information of the other cities.
-- When user click on current city while dismissing the location information to be shared with the app, app shows location permission dialog again and ask if the user wants to share the location information now. (Done my using **resetPermissionDialogShown()** function on view model which when the user click on the current location, if the location permission is not given then shows the location permission dialog)
-- If the user accept the location information to be shared with the app, then user could easly see the current location with all the other locations as well. Using UI state, we ensure the state of the UI is not deleted after the app changed by the user.
-
-Since now, we need to add a dropdown with the name of the cities, and when user click on certain city name, the UI should gave the weather information of the city provided, we start implementing Geocoder. We used Geocoder provided by Android SDK since it is free and easy to use. It has been used for two purposes. One to gave the city name after we get the location latitude and longititude by FusedLocationProvider. Since longitude and latitude couldn't be understood by the user easly we needed to reverse geocoding. Then, we need to provide latitude and longtitude of the cities chosen by the user using dropdown menu so we geocode the name of  the city and provide the information to weather API using state variables.
 
 ---
 
