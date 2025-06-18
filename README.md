@@ -25,7 +25,7 @@ It fetches current weather data, displays location-based weather information, an
 ### Demo Video
 Watch our app in action! The demo shows the app's core functionality including location detection, city selection, and theme switching.
 
-<a href="media/project3 demo video.mov">
+<a href="https://drive.google.com/file/d/1yfX1Q7TZv8ddVgr-bj_33xnnhFYZ8R_1/view?usp=sharing">
   <img src="media/demo-video-thumbnail.png" alt="WeatherApp Demo" width="300" />
 </a>
 
