@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.weatherapp.ui.WeatherUiState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -125,14 +126,23 @@ fun PermissionDialog(
 }
 
 
-
 @Composable
-fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit, onPermissionDenied: () -> Unit) {
+fun UserLocationScreen(
+    onLocationReceived: (UserLocation) -> Unit,
+    onPermissionDenied: () -> Unit,
+    onPermissionDialogShown: () -> Unit,
+    state: WeatherUiState
+) {
     val context = LocalContext.current
     val locationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val scope = rememberCoroutineScope()
 
-    var showPermissionDialog by remember { mutableStateOf(true) }
+    val showPermissionDialog =
+        !state.locationPermissionGranted &&
+                state.currentLocation == null &&
+                !state.permissionDialogShown
+
+
     var showSecurityErrorDialog by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -168,10 +178,11 @@ fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit, onPermissionD
         }
     }
 
+    // 👇 Show custom permission dialog
     if (showPermissionDialog) {
         LocationPermission(
             onRequestPermissions = {
-                showPermissionDialog = false
+                onPermissionDialogShown()
                 permissionLauncher.launch(
                     arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -180,7 +191,7 @@ fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit, onPermissionD
                 )
             },
             onDismiss = {
-                showPermissionDialog = false
+                onPermissionDialogShown()
                 onPermissionDenied()
             }
         )
@@ -192,3 +203,6 @@ fun UserLocationScreen(onLocationReceived: (UserLocation) -> Unit, onPermissionD
         }
     }
 }
+
+
+

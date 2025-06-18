@@ -39,8 +39,11 @@ class MainActivity : ComponentActivity() {
                             },
                             onPermissionDenied = {
                                 viewModel.setLocationPermissionDenied()
-                            }
+                            },
+                            onPermissionDialogShown = { viewModel.markPermissionDialogShown() },
+                            state=state
                         )
+
                     }
                 }
             }
