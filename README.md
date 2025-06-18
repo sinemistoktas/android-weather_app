@@ -25,16 +25,20 @@ It fetches current weather data, displays location-based weather information, an
 ### Demo Video
 Watch our app in action! The demo shows the app's core functionality including location detection, city selection, and theme switching.
 
-[![WeatherApp Demo](media/demo-video-thumbnail.png)](media/project3 demo video.mov)
+<a href="media/project3 demo video.mov">
+  <img src="media/demo-video-thumbnail.png" alt="WeatherApp Demo" width="300" />
+</a>
 
 *Click the thumbnail above to watch the full demo video*
 
 ### Light Theme Screenshot
-![Light Theme](media/light-theme-screenshot.png)
+<img src="media/light-theme-screenshot.png" alt="Light Theme" width="300" />
+
 *WeatherApp in light mode showing current weather information for Istanbul*
 
 ### Dark Theme Screenshot  
-![Dark Theme](media/dark-theme-screenshot.png)
+<img src="media/dark-theme-screenshot.png" alt="Dark Theme" width="300" />
+
 *WeatherApp in dark mode showing current weather information for Berlin*
 
 ---
