@@ -25,7 +25,11 @@ It fetches current weather data, displays location-based weather information, an
 ### Current Functionality
 
 **Main Screen**: Displays comprehensive weather information
-- **Current Location**: Automatically detected via GPS with reverse geocoding
+- **Current Location**:
+  - Automatically detected via GPS with reverse geocoding using 
+**Geocoder** provided by Android.
+  - When the app starts, it asks for permission to access your location. If you decline, you can still use the app to view weather for other cities. If you later want to enable current location, the app will show the permission dialog again when you select the current location option from dropdown menu.
+  
 - **City Selection**: Dropdown menu allows choosing from:
   - Current detected location (default)
   - Major world cities: Paris, Berlin, London, Tokyo, New York, İstanbul, Barcelona, Amsterdam
@@ -55,6 +59,21 @@ It fetches current weather data, displays location-based weather information, an
 - **MVVM Architecture** - ViewModel + Repository pattern
 - **Coroutines & LiveData** - Asynchronous programming and state management
 - **Material3 UI Components** - Modern Material Design system
+
+---
+
+## ❔ How We Handle Weather App Logic & Added UI State
+
+First, we decided on the UI design. We chose to use Material Design Cards to organize all the weather information we retrieve from the API into their designated places. After finalizing our desired UI design, we began implementing the Weather API integration to fetch weather information from specific latitude and longitude coordinates. We store the API configuration (base URL and endpoints) in the `data` folder within the `Constants.kt` file and connect to the weather API through the `WeatherApi` class. After successfully connecting to the Weather API, we use the **WeatherApiService** class to send requests and retrieve specific weather information from the API.
+
+After successfully demonstrating that we could connect to the Weather API, we started working on obtaining the current location of the user. We used **FusedLocationProvider** for this purpose. We also referenced the sample code as guidance while implementing the **LocationService** in our app. The location service functionality can be summarized as follows:
+
+- Get the current location of the user using **FusedLocationProvider** if the user accepts sharing their location information with the app.
+- If location permission is denied, the app only shows weather information for other cities from the dropdown menu.
+- When a user clicks on "Current City" while having previously dismissed the location permission request, the app shows the location permission dialog again and asks if the user wants to share their location information now. (This is implemented using the **resetPermissionDialogShown()** function in the ViewModel, which resets the permission dialog state when the user clicks on the current location option without having granted location permission.)
+- If the user accepts sharing their location information with the app, they can easily see their current location weather alongside all other available locations. Using UI state management, we ensure the state of the UI is preserved when the app context changes due to user interactions.
+
+Next, we implemented the Geocoder to support our city dropdown functionality. When a user selects a city from the dropdown, the UI displays weather information for that specific city. We chose the Geocoder provided by the Android SDK since it's free and easy to use. The Geocoder serves two main purposes: First, it provides the city name after we obtain the location latitude and longitude from **FusedLocationProvider**. Since longitude and latitude coordinates aren't easily understood by users, we needed reverse geocoding to convert coordinates to readable city names. Second, we need to provide latitude and longitude coordinates for cities chosen by the user through the dropdown menu, so we use forward geocoding to convert the city name to coordinates and provide this information to the weather API using state variables.
 
 ---
 

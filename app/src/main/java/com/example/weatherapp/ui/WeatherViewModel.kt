@@ -113,6 +113,7 @@ fun getWeatherByCity(city: String) {
  viewModelScope.launch {
   try {
    if (city == "Current City") {
+    resetPermissionDialogShown()
     // Handle current location specially
     val currentLocation = _currentLocation.value
     if (currentLocation != null) {
@@ -217,6 +218,13 @@ fun getWeatherByCity(city: String) {
    }
   }
  }
+ fun markPermissionDialogShown() {
+  _uiState.value = _uiState.value?.copy(permissionDialogShown = true)
+ }
+
+ fun resetPermissionDialogShown() {
+  _uiState.value = _uiState.value?.copy(permissionDialogShown = false)
+ }
 
  private fun updateUiState() {
   _uiState.value = WeatherUiState(
@@ -236,7 +244,9 @@ fun getWeatherByCity(city: String) {
    city_lat = _currentLat,
    city_long = _currentLon,
    locationPermissionGranted = locationPermissionGranted.value,
-   isLoading = isLoading.value
+   isLoading = isLoading.value,
+   permissionDialogShown = _uiState.value?.permissionDialogShown
+    ?: false
   )
  }
 
